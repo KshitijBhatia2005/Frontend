@@ -2,7 +2,34 @@ import {useState} from "react";
 
 const AIAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const handleClick = () => {};
+  const [messages, setMessages] = useState([{ role: "assistant", text: "Hello! How can I assist you today?" }]);
+  const [input, setInput] = useState("");
+
+  const sendMessage = async () => {
+    const trimmed = input.trim();
+    if (!trimmed) return;
+    const next = [...messages, { role: "user", text: trimmed }];
+    setMessages(next);
+    setInput("");
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: trimmed }),
+      });
+      if (!res.ok) {
+        const t = await res.text();
+        throw new Error(t || `Request failed: ${res.status}`);
+      }
+      const json = await res.json();
+      setMessages((m) => [...m, { role: "assistant", text: json.reply }]);
+    } catch (e) {
+      setMessages((m) => [
+        ...m,
+        { role: "assistant", text: e.message || "Failed to get reply" },
+      ]);
+    }
+  };
 
   return (
     <div>
@@ -29,21 +56,30 @@ const AIAssistant = () => {
           </div>
 
           {/* Chat Body */}
-          <div className="flex-1 p-4 overflow-y-auto">
-            <p className="text-gray-500 text-sm">
-              Hello! How can I assist you today?
-            </p>
+          <div className="flex-1 p-4 overflow-y-auto space-y-2">
+            {messages.map((m, i) => (
+              <div key={i} className={m.role === "user" ? "text-right" : "text-left"}>
+                <span className={m.role === "user" ? "inline-block bg-green-100 text-gray-800 px-3 py-2 rounded-lg" : "inline-block bg-gray-100 text-gray-800 px-3 py-2 rounded-lg"}>
+                  {m.text}
+                </span>
+              </div>
+            ))}
           </div>
 
           {/* Input */}
           <div className="p-3 border-t border-gray-200 flex gap-2">
             <input
               type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") sendMessage();
+              }}
               placeholder="Type your message..."
               className="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
             />
             <button
-              onClick={handleClick}
+              onClick={sendMessage}
               className="bg-green-600 hover:bg-green-700 text-white px-2 py-2 rounded-lg"
             >
               Send

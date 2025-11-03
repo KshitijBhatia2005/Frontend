@@ -9,10 +9,9 @@ const Home = () => {
   const [drugName, setDrugName] = useState("");
 
   // Handles clicking "Start Discovery"
-  const handleStart = () => {
-    if (drugName.trim() !== "") {
-      setScanResult(drugName); // Treat typed input same as scanned data
-    }
+  const handleStart = async () => {
+    if (drugName.trim() === "") return;
+    setScanResult(drugName);
   };
 
   // Handles successful scan
