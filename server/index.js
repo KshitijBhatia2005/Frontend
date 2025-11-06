@@ -19,7 +19,27 @@ app.post("/api/analyze", async (req, res) => {
     return res.status(400).json({ error: "drugName is required" });
   }
 
-  // Mocked analysis result
+  const normalized = drugName.toLowerCase().trim();
+
+  // Special case for paracetamol
+  if (normalized === "paracetamol" || normalized === "acetaminophen") {
+    return res.json({
+      drugName,
+      newUse: "Chronic pain relief, Neuropsychological effects, Fever and inflammation modulation",
+      confidence: 0.82,
+      summary:
+        "Chronic pain relief: Research needed on paracetamol's long-term effectiveness and liver safety in chronic conditions.\n\n" +
+        "Neuropsychological effects: Emerging evidence links paracetamol to altered emotional responses—needs deeper study.\n\n" +
+        "Fever and inflammation modulation: Mechanism of action in fever control and anti-inflammatory limits remain unclear.",
+      sources: [
+        { title: "Paracetamol and chronic pain management", url: "https://pubmed.ncbi.nlm.nih.gov/chronic-pain" },
+        { title: "Neuropsychological impact of acetaminophen", url: "https://pubmed.ncbi.nlm.nih.gov/neuro-effects" },
+        { title: "Fever modulation mechanisms", url: "https://pubmed.ncbi.nlm.nih.gov/fever-control" },
+      ],
+    });
+  }
+
+  // Default mocked analysis result for other drugs
   const result = {
     drugName,
     newUse: `${drugName} potential for anti-inflammatory applications`,
@@ -49,5 +69,6 @@ app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`API server listening on http://localhost:${PORT}`);
 });
+
 
 
