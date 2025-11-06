@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "start": "node server/index.js",
     "server": "node server/index.js",
     "dev:full": "npm-run-all --parallel server dev"
   },
@@ -34,7 +35,7 @@
     "vite": "^7.1.7"
   },
   "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
-  "main": "eslint.config.js",
+  "main": "server/index.js",
   "author": "",
   "license": "ISC"
 }
