@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 
 import {useEffect, useMemo, useState} from "react";
+import {API_ENDPOINTS} from "../config";
 
 const AnalyzedData = ({drugName, newUse, confidence, summary}) => {
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ const AnalyzedData = ({drugName, newUse, confidence, summary}) => {
     if (!drugName) return;
     setLoading(true);
     setError(null);
-    fetch("/api/analyze", {
+    fetch(API_ENDPOINTS.analyze, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({drugName}),

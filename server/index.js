@@ -7,6 +7,19 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+// Root route
+app.get("/", (req, res) => {
+  res.json({
+    message: "Drug Discovery API Server",
+    version: "1.0.0",
+    endpoints: {
+      health: "GET /api/health",
+      analyze: "POST /api/analyze",
+      chat: "POST /api/chat",
+    },
+  });
+});
+
 // Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });

@@ -1,4 +1,5 @@
 import {useState} from "react";
+import {API_ENDPOINTS} from "../config";
 
 const AIAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,7 +13,7 @@ const AIAssistant = () => {
     setMessages(next);
     setInput("");
     try {
-      const res = await fetch("/api/chat", {
+      const res = await fetch(API_ENDPOINTS.chat, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: trimmed }),
